@@ -1,0 +1,107 @@
+<div class="dashboard">
+
+    <!-- Header -->
+    <header class="dashboard-header">
+      <h1>Bienvenue sur MeetMind</h1>
+      <p>Visualisez et gérez vos enregistrements, transcriptions et résumés</p>
+      <div class="actions">
+        <button pButton type="button" label="Démarrer un enregistrement" icon="pi pi-microphone" (click)="startRecording()"></button>
+        <button pButton type="button" label="Paramètres" icon="pi pi-cog" class="p-button-secondary" (click)="openSettings()"></button>
+      </div>
+    </header>
+  
+    <!-- Notifications -->
+    <section class="notifications">
+      <div class="section-header">
+        <h2>Notifications</h2>
+        <button pButton type="button" icon="pi pi-trash" label="Tout supprimer" (click)="clearNotifications()" class="p-button-text"></button>
+      </div>
+      <div *ngFor="let n of notifications" class="notification" [ngClass]="n.color">
+        <div class="content">
+          <strong>{{ n.title }}</strong>
+          <p>{{ n.message }}</p>
+          <small>{{ n.time }}</small>
+        </div>
+        <button pButton type="button" icon="pi pi-times" class="p-button-text" (click)="removeNotification(n)"></button>
+      </div>
+    </section>
+  
+    <!-- Stats cards -->
+    <section class="stats-cards">
+      <div class="card">
+        <h3>Réunions totales</h3>
+        <p>{{ stats.totalMeetings }}</p>
+      </div>
+      <div class="card">
+        <h3>Heures enregistrées</h3>
+        <p>{{ stats.recordedHours }}</p>
+      </div>
+      <div class="card">
+        <h3>Transcriptions</h3>
+        <p>{{ stats.transcripts }}</p>
+      </div>
+      <div class="card">
+        <h3>Résumés créés</h3>
+        <p>{{ stats.summaries }}</p>
+      </div>
+    </section>
+  
+    <!-- Recent & Upcoming -->
+    <section class="lists">
+      <div class="list-card">
+        <div class="section-header">
+          <h3>Enregistrements récents</h3>
+          <button pButton type="button" icon="pi pi-refresh" class="p-button-text" (click)="loadRecent()"></button>
+        </div>
+        <ul>
+          <li *ngFor="let r of recentRecordings">
+            <span>{{ r.title }}</span>
+            <small>{{ r.date }} • {{ r.duration }} min</small>
+            <button pButton type="button" icon="pi pi-download" class="p-button-text"></button>
+            <button pButton type="button" icon="pi pi-play" class="p-button-text"></button>
+          </li>
+        </ul>
+        <button pButton type="button" label="Voir tous les enregistrements" class="full-width"></button>
+      </div>
+  
+      <div class="list-card">
+        <div class="section-header">
+          <h3>Réunions à venir</h3>
+          <button pButton type="button" icon="pi pi-refresh" class="p-button-text" (click)="loadUpcoming()"></button>
+        </div>
+        <ul>
+          <li *ngFor="let m of upcomingMeetings">
+            <span>{{ m.title }}</span>
+            <small>{{ m.startUtc | date:'dd/MM/yyyy HH:mm' }}</small>
+            <button pButton type="button" label="Print" icon="pi pi-print" class="p-button-text"></button>
+          </li>
+        </ul>
+        <button pButton type="button" label="Connecter Google Calendar" class="full-width"></button>
+      </div>
+    </section>
+  
+    <!-- Storage & Team Activity -->
+    <section class="bottom-cards">
+      <div class="storage-card">
+        <h3>Stockage utilisé</h3>
+        <p>{{ storageUsed.percent }} % ({{ storageUsed.used }} / {{ storageUsed.total }})</p>
+        <p-progressBar [value]="storageUsed.percent"></p-progressBar>
+        <button pButton type="button" label="Gérer le stockage" class="p-button-text"></button>
+      </div>
+  
+      <div class="activity-card">
+        <h3>Activité de l’équipe</h3>
+        <div class="activity-item">
+          <strong>{{ teamActivity.transcriptsThisMonth }}</strong>
+          <span>Transcriptions ce mois</span>
+        </div>
+        <div class="activity-item">
+          <strong>{{ teamActivity.avgDuration }}</strong>
+          <span>Durée moyenne par réunion</span>
+        </div>
+        <button pButton type="button" label="Voir les statistiques détaillées" class="p-button-text"></button>
+      </div>
+    </section>
+  
+  </div>
+  
