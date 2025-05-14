@@ -1,17 +1,19 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError, retry } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { catchError, Observable, retry, throwError } from 'rxjs';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root'
+})
 export class ApiService {
-  private readonly versionUrl = '/v1';  // adapte si ton API est préfixée différemment
-  private readonly baseUrl = `${environment.apiUrl}${this.versionUrl}`; // adapte si ton API est préfixée différemment
+private readonly versionUrl = '/v1';  // adapte si ton API est préfixée différemment
+  private readonly baseUrl = `${environment.BASE_API}${this.versionUrl}`; // adapte si ton API est préfixée différemment
 
   constructor(private http: HttpClient) {}
 
   get<T>(path: string, params?: Record<string, any>): Observable<T> {
+    console.log('GET', `${this.baseUrl}${path}`, params);
     return this.http.get<T>(`${this.baseUrl}${path}`, { params: this.buildParams(params) })
       .pipe(retry(1), catchError(this.handleError));
   }
