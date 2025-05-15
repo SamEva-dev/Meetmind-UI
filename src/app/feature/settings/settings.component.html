@@ -1,0 +1,80 @@
+<!-- settings.component.html -->
+<div class="p-8 max-w-3xl mx-auto space-y-6">
+  <!-- Section: Automatisation des réunions -->
+  <div class="border border-gray-200 rounded-xl bg-white dark:bg-surface-950">
+    <div class="flex items-center gap-2 px-6 pt-6">
+      <i class="pi pi-cog text-primary"></i>
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Paramètres</h2>
+    </div>
+
+    <div class="px-6 pb-4 pt-2">
+      <h3 class="text-md font-medium text-purple-700 flex items-center gap-2">
+        <i class="pi pi-calendar"></i>
+        Automatisation des réunions
+      </h3>
+
+      <div class="mt-4 space-y-4">
+        <div class="flex justify-between items-center">
+          <div>
+            <div class="text-sm font-medium text-gray-900 dark:text-white">Transcription automatique</div>
+            <div class="text-sm text-gray-500">Transcrit automatiquement les réunions après leur fin</div>
+          </div>
+          <p-inputSwitch [(ngModel)]="settings.autoTranscript"></p-inputSwitch>
+        </div>
+
+        <div class="flex justify-between items-center">
+          <div>
+            <div class="text-sm font-medium text-gray-900 dark:text-white">Résumé automatique</div>
+            <div class="text-sm text-gray-500">Génère un résumé de la réunion après transcription</div>
+          </div>
+          <p-inputSwitch [(ngModel)]="settings.autoSummarize"></p-inputSwitch>
+        </div>
+
+        <div class="flex justify-between items-center">
+          <div>
+            <div class="text-sm font-medium text-gray-900 dark:text-white">Démarrage automatique</div>
+            <div class="text-sm text-gray-500">Démarre l'enregistrement pour les événements Google Calendar</div>
+          </div>
+          <p-inputSwitch [(ngModel)]="settings.autoStartRecord"></p-inputSwitch>
+        </div>
+
+        <div class="flex justify-between items-center">
+          <div>
+            <div class="text-sm font-medium text-gray-900 dark:text-white">Arrêt automatique</div>
+            <div class="text-sm text-gray-500">Arrête l'enregistrement à l'heure de fin prévue</div>
+          </div>
+          <p-inputSwitch [(ngModel)]="settings.autoTranslate"></p-inputSwitch>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: Notifications -->
+  <div class="border border-gray-200 rounded-xl bg-white dark:bg-surface-950">
+    <div class="px-6 pt-6">
+      <h3 class="text-md font-medium text-purple-700 flex items-center gap-2">
+        <i class="pi pi-bell"></i>
+        Notifications
+      </h3>
+    </div>
+
+    <div class="px-6 pb-6 pt-4 space-y-6">
+      <div>
+        <label class="text-sm font-medium text-gray-900 dark:text-white block mb-1">Minutes avant la réunion</label>
+        <small class="text-gray-500 block mb-2">Notification {{settings.notifyBeforeMinutes}} minutes avant la réunion</small>
+        <input type="range" min="0" max="30" [(ngModel)]="settings.notifyBeforeMinutes" class="w-full accent-purple-500">
+      </div>
+
+      <div>
+        <label class="text-sm font-medium text-gray-900 dark:text-white block mb-1">Répétition des notifications</label>
+        <small class="text-gray-500 block mb-2">Rappel toutes les {{settings.notificationRepeatInterval}} minutes</small>
+        <input type="range" min="1" max="10" [(ngModel)]="settings.notificationRepeatInterval" class="w-full accent-purple-500">
+      </div>
+    </div>
+  </div>
+
+  <!-- Bouton Enregistrer -->
+  <div class="text-right">
+    <button pButton label="Enregistrer" icon="pi pi-save" class="bg-purple-600 border-purple-600 hover:bg-purple-700 text-white"></button>
+  </div>
+</div>

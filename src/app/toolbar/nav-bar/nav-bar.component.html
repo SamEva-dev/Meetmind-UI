@@ -1,0 +1,46 @@
+<nav class="navbar navbar-expand-sm ">
+  <span>
+    <a class="navbar-brand" href="#">
+      <span class="logo logo-left px-2 p-1 ms-2">sf</span>
+      <span class="logo logo-right ms-1">Hotel</span>
+    </a>
+  </span>
+  <ul class="navbar-nav flex-fill mt-1 align-items-center left-nav">
+    <li class="nav-item flex-fill">
+      <input class="form-control navbar-search" type="text" placeholder="Search . . .">
+    </li>
+  </ul>
+  <span class="spacer"></span>
+  
+  <div>
+    <button mat-icon-button matTooltip="Notifications">
+        <mat-icon>notifications</mat-icon>
+    </button>
+    <button mat-icon-button matTooltip="My Account" [matMenuTriggerFor]="accountMenu">
+        <mat-icon>account_circle</mat-icon>
+    </button>
+    <mat-menu #accountMenu [overlapTrigger]="false" yPosition="below">
+        <button mat-menu-item [routerLink]="['/login']">
+            <mat-icon>person</mat-icon><span>Connexion</span>
+        </button>
+        <button mat-menu-item [routerLink]="['/register']">
+          <mat-icon>mic</mat-icon><span>Register</span>
+        </button>
+        <button mat-menu-item>
+            <mat-icon>help</mat-icon><span>Help</span>
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item>
+          <mat-icon><span class="material-icons">
+            manage_accounts
+            </span></mat-icon><span>Options</span>
+      </button>
+      <mat-divider></mat-divider>
+        <button mat-menu-item>
+            <mat-icon>exit_to_app</mat-icon>Logout
+        </button>
+    </mat-menu>
+    <span>Welcome</span>
+</div>
+
+</nav>
