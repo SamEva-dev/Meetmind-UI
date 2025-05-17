@@ -13,7 +13,11 @@ export class SettingsService {
    private readonly api = inject(ApiService);
    private readonly endPoint = '/Settings';
 
-  getSettings():Observable<any> {
+  getSettings():Observable<Settings> {
    return this.api.get<Settings>(this.endPoint);
+  }
+
+  updateSettings(settings: Settings): Observable<Settings> {
+    return this.api.post<Settings>(this.endPoint, settings);
   }
 }

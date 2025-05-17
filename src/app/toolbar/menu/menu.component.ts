@@ -16,11 +16,15 @@ export class MenuComponent {
         this.model = [
             {
                 label: 'Home',
-                items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'] }]
+                items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/dashboard'] }]
             },
             {
                 label: 'Settings',
                 items: [{ label: 'Settings', icon: 'pi pi-fw pi-home', routerLink: ['/settings'] }]
+            },
+            {
+                label: 'Meetings',
+                items: [{ label: 'Meetings', icon: 'pi pi-fw pi-home', routerLink: ['/meetings'] }]
             },
             
         ];

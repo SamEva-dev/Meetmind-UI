@@ -6,5 +6,8 @@ export interface Settings {
     notifyBeforeMinutes: number;
     notificationRepeatInterval: number;
     requireConsent: boolean;
+    retentionDays: number;
+    useGoogleCalendar:boolean;
+    useOutlookCalendar:boolean;
     language: string;
   }

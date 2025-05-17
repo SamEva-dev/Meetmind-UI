@@ -16,6 +16,20 @@
       <div class="mt-4 space-y-4">
         <div class="flex justify-between items-center">
           <div>
+            <div class="text-sm font-medium text-gray-900 dark:text-white">Réunion google calendar</div>
+            <div class="text-sm text-gray-500">Récupérer les réunions provenant de Google calendar</div>
+          </div>
+          <p-inputSwitch [(ngModel)]="settings.useGoogleCalendar"></p-inputSwitch>
+        </div>
+        <div class="flex justify-between items-center">
+          <div>
+            <div class="text-sm font-medium text-gray-900 dark:text-white">Réunion outlook</div>
+            <div class="text-sm text-gray-500">Récupérer les réunions provenant de Outlook calendar</div>
+          </div>
+          <p-inputSwitch [(ngModel)]="settings.useOutlookCalendar"></p-inputSwitch>
+        </div>
+        <div class="flex justify-between items-center">
+          <div>
             <div class="text-sm font-medium text-gray-900 dark:text-white">Transcription automatique</div>
             <div class="text-sm text-gray-500">Transcrit automatiquement les réunions après leur fin</div>
           </div>
@@ -75,6 +89,7 @@
 
   <!-- Bouton Enregistrer -->
   <div class="text-right">
-    <button pButton label="Enregistrer" icon="pi pi-save" class="bg-purple-600 border-purple-600 hover:bg-purple-700 text-white"></button>
+    <p-button  label="Enregistrer" 
+    (click)="saveSettings()"></p-button>
   </div>
 </div>

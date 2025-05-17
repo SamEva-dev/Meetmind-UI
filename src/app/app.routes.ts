@@ -14,6 +14,16 @@ export const routes: Route[] = [
         children: [
             { path: '', component: DashboardComponent },
             {
+              path: 'dashboard',
+              loadComponent: () =>
+                import('./feature/dashboard/dashboard.component').then(c => c.DashboardComponent)
+            },
+            {
+              path: 'meetings',
+              loadComponent: () =>
+                import('./feature/meetings/meetings.component').then(c => c.MeetingsComponent)
+            },
+            {
               path: 'settings',
               loadComponent: () =>
                 import('./feature/settings/settings.component').then(c => c.SettingsComponent)

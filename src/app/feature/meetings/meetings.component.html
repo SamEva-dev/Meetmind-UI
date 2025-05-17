@@ -1,0 +1,114 @@
+<!-- meetings.component.html -->
+<div class="p-6">
+    <div class="bg-purple-100 text-purple-800 rounded-xl p-6 mb-6 flex items-center justify-between">
+    <div>
+      <h3 class="text-xl font-semibold mb-2">
+        {{ isRecording ? 'Enregistrement en cours' : 'Prêt à enregistrer' }}
+      </h3>
+      <p class="text-sm text-purple-700">
+        {{ isRecording ? 'La réunion est en cours d\'enregistrement.' : 'Vous pouvez démarrer une nouvelle réunion à tout moment.' }}
+      </p>
+    </div>
+    <button pButton
+            [icon]="isRecording ? 'pi pi-circle-fill' : 'pi pi-play'"
+            [label]="isRecording ? 'Enregistrement...' : 'Démarrer l\'enregistrement'"
+            [disabled]="!selectedMeeting || selectedMeeting.state !== 'Pending'"
+            [class]="isRecording ? 'p-button-sm p-button-rounded p-button-danger' : 'p-button-sm p-button-rounded p-button-primary'"
+            (click)="toggleRecording()">
+    </button>
+  </div>
+  <div class="flex items-center justify-between mb-6">
+    <h2 class="text-2xl font-semibold">Réunions</h2>
+    <p-button pRipple icon="pi pi-refresh" (onClick)="refresh()" class="p-button-rounded p-button-text" aria-label="Actualiser"></p-button>
+  </div>
+
+  <p-table [value]="meetings" class="shadow rounded-xl"
+           [scrollable]="true" scrollHeight="400px"
+           [virtualScroll]="true" [rows]="6"
+           selectionMode="single"
+           [(selection)]="selectedMeeting">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Title</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Duration</th>
+        <th>Statut</th>
+        <th>Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-meeting let-rowIndex="rowIndex">
+      <tr [pSelectableRow]="meeting"
+          [ngClass]="{
+            'bg-blue-100': selectedMeeting && selectedMeeting.id === meeting.id,
+            'bg-white': selectedMeeting && selectedMeeting.id !== meeting.id
+          }">
+        <td>{{ meeting.title }}</td>
+        <td>{{ meeting.startUtc | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+        <td>{{ meeting.endUtc | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+        <td>{{ meeting.duration }}</td>
+        <td>
+           <span class="text-xs font-semibold px-2 py-1 rounded-full"
+                [ngClass]="{
+                  'bg-yellow-100 text-yellow-700': meeting.state === 'Pending',
+                  'bg-blue-100 text-blue-700': meeting.state === 'Recording',
+                  'bg-orange-100 text-orange-700': meeting.state === 'Paused',
+                  'bg-green-100 text-green-700': meeting.state === 'Done'
+                }">
+            {{ meeting.state }}
+          </span>
+        </td>
+        <td class="flex space-x-2">
+          <p-button *ngIf="meeting.transcriptState === 'Completed' || meeting.summaryState === 'Completed'"
+                  pButton icon="pi pi-file"
+                  class="p-button-rounded p-button-text p-button-info"
+                  aria-label="Voir"></p-button>
+          <p-button icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger" (click)="onDeleteMeeting(meeting)"
+          aria-label="Supprimer"></p-button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<!-- fichiers.component.html -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+  <div class="shadow rounded-xl p-4">
+    <h3 class="text-lg font-semibold mb-4">Fichiers Audio</h3>
+    <ul class="space-y-2">
+      <li *ngFor="let file of audioFiles" class="flex justify-between items-center">
+        <span class="text-sm text-gray-700">{{ file.name }}</span>
+        <div class="space-x-2">
+          <p-button icon="pi pi-download" class="p-button-text p-button-sm"></p-button>
+          <p-button icon="pi pi-trash" class="p-button-text p-button-sm p-button-danger"></p-button>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="shadow rounded-xl p-4">
+    <h3 class="text-lg font-semibold mb-4">Transcriptions</h3>
+    <ul class="space-y-2">
+      <li *ngFor="let file of transcripts" class="flex justify-between items-center">
+        <span class="text-sm text-gray-700">{{ file.name }}</span>
+        <div class="space-x-2">
+          <p-button icon="pi pi-download" class="p-button-text p-button-sm"></p-button>
+          <p-button icon="pi pi-trash" class="p-button-text p-button-sm p-button-danger"></p-button>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="shadow rounded-xl p-4">
+    <h3 class="text-lg font-semibold mb-4">Résumés</h3>
+    <ul class="space-y-2">
+      <li *ngFor="let file of summaries" class="flex justify-between items-center">
+        <span class="text-sm text-gray-700">{{ file.name }}</span>
+        <div class="space-x-2">
+          <p-button icon="pi pi-download" class="p-button-text p-button-sm"></p-button>
+          <p-button icon="pi pi-trash" class="p-button-text p-button-sm p-button-danger"></p-button>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
