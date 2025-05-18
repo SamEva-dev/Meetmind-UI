@@ -3,16 +3,16 @@
     <div class="bg-purple-100 text-purple-800 rounded-xl p-6 mb-6 flex items-center justify-between">
     <div>
       <h3 class="text-xl font-semibold mb-2">
-        {{ isRecording ? 'Enregistrement en cours' : 'Prêt à enregistrer' }}
+        {{ isRecording || selectedMeeting?.state === 'Recording' ? 'Enregistrement en cours' : 'Prêt à enregistrer' }}
       </h3>
       <p class="text-sm text-purple-700">
-        {{ isRecording ? 'La réunion est en cours d\'enregistrement.' : 'Vous pouvez démarrer une nouvelle réunion à tout moment.' }}
+        {{ isRecording || selectedMeeting?.state === 'Recording' ? 'La réunion est en cours d\'enregistrement.' : 'Vous pouvez démarrer une nouvelle réunion à tout moment.' }}
       </p>
     </div>
     <button pButton
-            [icon]="isRecording ? 'pi pi-circle-fill' : 'pi pi-play'"
-            [label]="isRecording ? 'Enregistrement...' : 'Démarrer l\'enregistrement'"
-            [disabled]="!selectedMeeting || selectedMeeting.state !== 'Pending'"
+            [icon]="isRecording || selectedMeeting?.state === 'Recording' ? 'pi pi-circle-fill' : selectedMeeting?.state === 'Paused' ? 'pi pi-pause': 'pi pi-play'"
+            [label]="isRecording || selectedMeeting?.state === 'Recording' ? 'Arrêter l\'enregistrement' : 'Démarrer l\'enregistrement'"
+            [disabled]="!selectedMeeting || ( selectedMeeting.state !== 'Pending') && ( selectedMeeting.state !== 'Recording')"
             [class]="isRecording ? 'p-button-sm p-button-rounded p-button-danger' : 'p-button-sm p-button-rounded p-button-primary'"
             (click)="toggleRecording()">
     </button>
@@ -53,7 +53,8 @@
                   'bg-yellow-100 text-yellow-700': meeting.state === 'Pending',
                   'bg-blue-100 text-blue-700': meeting.state === 'Recording',
                   'bg-orange-100 text-orange-700': meeting.state === 'Paused',
-                  'bg-green-100 text-green-700': meeting.state === 'Done'
+                  'bg-green-100 text-green-700': meeting.state === 'Done',
+                  'bg-red-100 text-red-700': meeting.state === 'Cancelled'
                 }">
             {{ meeting.state }}
           </span>

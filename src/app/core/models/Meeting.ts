@@ -14,7 +14,7 @@ export interface Meeting {
   duration?: string;
 }
 
-export type MeetingState = 'Pending' | 'Recording' | 'Paused' | 'Done';
+export type MeetingState = 'Pending' | 'Recording' | 'Paused' | 'Done' |'Cancelled';
 export type SummaryState = 'NotRequested' | 'Queued' | 'Processing' | 'Completed' | 'Failed';
 export type TranscriptState = 'NotRequested' | 'Queued' | 'Processing' | 'Completed' | 'Failed';
 export type MeetingStateColor = 'green' | 'red' | 'blue' | 'yellow';

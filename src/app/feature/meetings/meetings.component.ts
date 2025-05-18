@@ -60,19 +60,17 @@ ngOnInit(): void {
   toggleRecording(): void {
     
     if (this.selectedMeeting && this.selectedMeeting.state === 'Pending') {
-    this.isRecording = !this.isRecording;
-
-    if (this.isRecording) {
-      console.log('🎤 Enregistrement démarré');
-      // TODO : appeler un service pour démarrer une réunion
-    } else {
-      console.log('🛑 Enregistrement arrêté');
-      // TODO : appeler un service pour terminer la réunion
+        this.isRecording = !this.isRecording;
+        // this.meetingService.startRecording(this.selectedMeeting.id, this.isRecording).pipe(
+        //   catchError((error) => {
+        //     console.error('Error starting/stopping recording:', error);
+        //     return of(null); // Return null in case of error
+        //   })
+        // ).subscribe(() => {
+        //   console.log('Recording toggled:', this.isRecording);
+        //   this.selectedMeeting.state = this.isRecording ? 'Recording' : 'Pending';
+        // });
     }
-
-    // TODO: appel API pour démarrer la réunion
-    console.log('Démarrage de la réunion avec ID :', this.selectedMeeting.id);
-  }
   }
 
   onDeleteMeeting(meeting: Meeting): void {

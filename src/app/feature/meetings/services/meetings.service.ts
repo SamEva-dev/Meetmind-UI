@@ -17,6 +17,18 @@ export class MeetingsService {
   getMeetingById(id: string): Observable<Meeting> {
     return this.api.get<Meeting>(`/meetings/${id}`);
   }
+  startRecording(id: string, isRecording: boolean): Observable<Meeting> {
+    return this.api.post<Meeting>(`/meetings/${id}/start`, {});
+  }
+  pauseRecording(id: string): Observable<Meeting> {
+    return this.api.post<Meeting>(`/meetings/${id}/pause`, {}); 
+  }
+  resumeRecording(id: string): Observable<Meeting> {  
+    return this.api.post<Meeting>(`/meetings/${id}/resume`, {}); 
+  }
+  stopRecording(id: string): Observable<Meeting> {
+    return this.api.post<Meeting>(`/meetings/${id}/stop`, {}); 
+  }
 
   deleteMeeting(id: string): Observable<Meeting> {
     return this.api.delete<Meeting>(`/meetings/${id}`);
