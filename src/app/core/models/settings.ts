@@ -3,6 +3,9 @@ export interface Settings {
     autoTranscript: boolean;
     autoSummarize: boolean;
     autoTranslate: boolean;
+    autoCancelMeeting: boolean;
+    autoDeleteMeeting: boolean;
+    autoStopRecord: boolean;
     notifyBeforeMinutes: number;
     notificationRepeatInterval: number;
     requireConsent: boolean;

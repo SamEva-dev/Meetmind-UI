@@ -17,17 +17,17 @@ export class MeetingsService {
   getMeetingById(id: string): Observable<Meeting> {
     return this.api.get<Meeting>(`/meetings/${id}`);
   }
-  startRecording(id: string, isRecording: boolean): Observable<Meeting> {
-    return this.api.post<Meeting>(`/meetings/${id}/start`, {});
+  startRecording(id: string): Observable<Meeting> {
+    return this.api.post<Meeting>(`/meetings/${id}/Recording/start`, {});
   }
   pauseRecording(id: string): Observable<Meeting> {
-    return this.api.post<Meeting>(`/meetings/${id}/pause`, {}); 
+    return this.api.post<Meeting>(`/meetings/${id}/Recording/pause`, {}); 
   }
   resumeRecording(id: string): Observable<Meeting> {  
-    return this.api.post<Meeting>(`/meetings/${id}/resume`, {}); 
+    return this.api.post<Meeting>(`/meetings/${id}/Recording/resume`, {}); 
   }
   stopRecording(id: string): Observable<Meeting> {
-    return this.api.post<Meeting>(`/meetings/${id}/stop`, {}); 
+    return this.api.post<Meeting>(`/meetings/${id}/Recording/stop`, {}); 
   }
 
   deleteMeeting(id: string): Observable<Meeting> {

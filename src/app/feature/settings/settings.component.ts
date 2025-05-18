@@ -27,6 +27,9 @@ settings: Settings = {
     requireConsent: false,
     useGoogleCalendar: false,
     useOutlookCalendar: false,
+    autoCancelMeeting: false,
+    autoDeleteMeeting: false,
+    autoStopRecord: false,
     language: 'fr'
   };
 
@@ -50,6 +53,10 @@ settings: Settings = {
           useGoogleCalendar: false,
           useOutlookCalendar: false,
           requireConsent: false,
+          retentionDays: 30,
+          autoCancelMeeting: false,
+          autoDeleteMeeting: false,
+          autoStopRecord: false,
           language: 'fr'
         } as Settings); // Return default settings in case of error
       })

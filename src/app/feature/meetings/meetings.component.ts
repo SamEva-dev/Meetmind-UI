@@ -8,6 +8,7 @@ import { Meeting } from '../../core/models/Meeting';
 import { MeetingsService } from './services/meetings.service';
 import { catchError, of, Subscription } from 'rxjs';
 import { SignalRService } from '../../core/services/signalr.service';
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-meetings',
   imports: [CommonModule,FormsModule, InputSwitchModule,ButtonModule,TableModule],
@@ -22,6 +23,7 @@ isRecording = false;
 
 meetingService = inject(MeetingsService);
 signalRService = inject(SignalRService);
+toastService = inject(ToastrService);
 private meetingSub!: Subscription;
 
 constructor() {
@@ -29,20 +31,7 @@ constructor() {
 }
 
 ngOnInit(): void {
-    this.meetingService.getRecentMeetings().pipe(
-      catchError((error) => {
-        console.error('Error loading meetings:', error);
-        return of([] as Meeting[]); // Return an empty array in case of error
-      })
-    ).subscribe((meetings: Meeting[]) => {
-      console.log('Meetings loaded:', meetings);
-      this.meetings = meetings;
-    });
-
-    this.meetingSub = this.signalRService.on<Meeting>('NewMeeting').subscribe(m => {
-      console.log('New meeting received:', m);
-      this.meetings.unshift(m);
-    });
+    this.refresh();
   }
 
   refresh() {
@@ -53,24 +42,62 @@ ngOnInit(): void {
       })
     ).subscribe((meetings: Meeting[]) => {
       console.log('Meetings loaded:', meetings);
+      this.toastService.error("Échec du chargement des réunions")
       this.meetings = meetings;
+    });
+
+    this.meetingSub = this.signalRService.on<Meeting>('NewMeeting').subscribe(m => {
+      console.log('New meeting received:', m);
+      this.meetings.unshift(m);
     });
   }
 
-  toggleRecording(): void {
-    
-    if (this.selectedMeeting && this.selectedMeeting.state === 'Pending') {
-        this.isRecording = !this.isRecording;
-        // this.meetingService.startRecording(this.selectedMeeting.id, this.isRecording).pipe(
-        //   catchError((error) => {
-        //     console.error('Error starting/stopping recording:', error);
-        //     return of(null); // Return null in case of error
-        //   })
-        // ).subscribe(() => {
-        //   console.log('Recording toggled:', this.isRecording);
-        //   this.selectedMeeting.state = this.isRecording ? 'Recording' : 'Pending';
-        // });
-    }
+  startRecording(): void {
+    if (!this.selectedMeeting) return;
+
+    this.meetingService.startRecording(this.selectedMeeting.id).subscribe({
+      next: () => {
+        this.toastService.success("Enregistrement démarré");
+        this.selectedMeeting!.state = 'Recording';
+      },
+      error: () => this.toastService.error("Erreur lors du démarrage de l'enregistrement")
+    });
+  }
+
+  stopRecording(): void {
+    if (!this.selectedMeeting) return;
+
+    this.meetingService.stopRecording(this.selectedMeeting.id).subscribe({
+      next: () => {
+        this.toastService.success("Enregistrement arrêté");
+        this.selectedMeeting!.state = 'Done';
+      },
+      error: () => this.toastService.error("Erreur lors de l'arrêt de l'enregistrement")
+    });
+  }
+
+  pauseRecording(): void {
+    if (!this.selectedMeeting) return;
+
+    this.meetingService.pauseRecording(this.selectedMeeting.id).subscribe({
+      next: () => {
+        this.toastService.info("Enregistrement en pause");
+        this.selectedMeeting!.state = 'Paused';
+      },
+      error: () => this.toastService.error("Erreur lors de la mise en pause")
+    });
+  }
+
+  resumeRecording(): void {
+    if (!this.selectedMeeting) return;
+
+    this.meetingService.resumeRecording(this.selectedMeeting.id).subscribe({
+      next: () => {
+        this.toastService.success("Enregistrement repris");
+        this.selectedMeeting!.state = 'Recording';
+      },
+      error: () => this.toastService.error("Erreur lors de la reprise de l'enregistrement")
+    });
   }
 
   onDeleteMeeting(meeting: Meeting): void {
@@ -79,15 +106,16 @@ ngOnInit(): void {
     this.meetingService.deleteMeeting(meeting.id).pipe(
       catchError((error) => {
         console.error('Error deleting meeting:', error);
+        this.toastService.error("Erreur lors de la suppression de la réunion");
         return of(null); // Return null in case of error
       })
     ).subscribe(() => {
       console.log('Meeting deleted:', meeting.id);
+      this.toastService.success("Réunion supprimée");
       this.meetings = this.meetings.filter(m => m.id !== meeting.id);
     });
   }
 }
-
 
   ngOnDestroy(): void {
     this.meetingSub?.unsubscribe();

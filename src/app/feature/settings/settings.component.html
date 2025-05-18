@@ -57,7 +57,21 @@
             <div class="text-sm font-medium text-gray-900 dark:text-white">Arrêt automatique</div>
             <div class="text-sm text-gray-500">Arrête l'enregistrement à l'heure de fin prévue</div>
           </div>
-          <p-inputSwitch [(ngModel)]="settings.autoTranslate"></p-inputSwitch>
+          <p-inputSwitch [(ngModel)]="settings.autoStopRecord"></p-inputSwitch>
+        </div>
+        <div class="flex justify-between items-center">
+          <div>
+            <div class="text-sm font-medium text-gray-900 dark:text-white">Arrêt automatique</div>
+            <div class="text-sm text-gray-500">Annuler une réunion</div>
+          </div>
+          <p-inputSwitch [(ngModel)]="settings.autoCancelMeeting"></p-inputSwitch>
+        </div>
+        <div class="flex justify-between items-center">
+          <div>
+            <div class="text-sm font-medium text-gray-900 dark:text-white">Arrêt automatique</div>
+            <div class="text-sm text-gray-500">Supprimer une réunion</div>
+          </div>
+          <p-inputSwitch [(ngModel)]="settings.autoDeleteMeeting"></p-inputSwitch>
         </div>
       </div>
     </div>
