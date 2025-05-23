@@ -8,6 +8,7 @@ import { Meeting } from '../../../core/models/Meeting';
 })
 export class MeetingsService {
   
+  
  private readonly api = inject(ApiService);
   
  getRecentMeetings(): Observable<Meeting[]> {
@@ -18,19 +19,43 @@ export class MeetingsService {
     return this.api.get<Meeting>(`/meetings/${id}`);
   }
   startRecording(id: string): Observable<Meeting> {
-    return this.api.post<Meeting>(`/meetings/${id}/Recording/start`, {});
+    return this.api.post<Meeting>(`/Recording/${id}/start`, {});
   }
   pauseRecording(id: string): Observable<Meeting> {
-    return this.api.post<Meeting>(`/meetings/${id}/Recording/pause`, {}); 
+    return this.api.post<Meeting>(`/Recording/${id}/pause`, {}); 
   }
   resumeRecording(id: string): Observable<Meeting> {  
-    return this.api.post<Meeting>(`/meetings/${id}/Recording/resume`, {}); 
+    return this.api.post<Meeting>(`/Recording/${id}/resume`, {}); 
   }
   stopRecording(id: string): Observable<Meeting> {
-    return this.api.post<Meeting>(`/meetings/${id}/Recording/stop`, {}); 
+    return this.api.post<Meeting>(`/Recording/${id}/stop`, {}); 
+  }
+
+  transcribeAudio(id: string): Observable<Meeting> {
+    return this.api.post<Meeting>(`/transcript/${id}`, {});
+  }
+  
+  generateSummary(id: string): Observable<Meeting> {
+    return this.api.post<Meeting>(`/summary/${id}`, {});
   }
 
   deleteMeeting(id: string): Observable<Meeting> {
     return this.api.delete<Meeting>(`/meetings/${id}`);
+  }
+
+  deleteAudio(id: string): Observable<Meeting> {
+    return this.api.delete<Meeting>(`/audio/${id}`);
+  }
+
+  deleteTranscript(id: string): Observable<Meeting> {
+    return this.api.delete<Meeting>(`/transcript/${id}`);
+  }
+
+  downloadAudio(meetingId: string): Observable<Blob> {
+    return this.api.getBlob(`/audio/${meetingId}`);
+  }
+
+  downloadTranscript(meetingId: string): Observable<Blob> {
+    return this.api.getBlob(`/transcript/${meetingId}/pdf`);
   }
 }

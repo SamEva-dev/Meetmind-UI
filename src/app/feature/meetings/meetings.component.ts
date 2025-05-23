@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { InputSwitchModule } from 'primeng/inputswitch';
@@ -10,13 +10,27 @@ import { catchError, of, Subscription } from 'rxjs';
 import { SignalRService } from '../../core/services/signalr.service';
 import { ToastrService } from 'ngx-toastr';
 import { NotificationService } from '../../core/services/notification.service';
+import { CardModule } from 'primeng/card';
+import { Menu } from 'primeng/menu';
+import { MenuModule } from 'primeng/menu';
 @Component({
   selector: 'app-meetings',
-  imports: [CommonModule,FormsModule, InputSwitchModule,ButtonModule,TableModule],
+  imports: [CommonModule,
+    FormsModule, 
+    InputSwitchModule,
+    ButtonModule,
+    TableModule,
+  CardModule,
+MenuModule
+],
   templateUrl: './meetings.component.html',
   styleUrl: './meetings.component.scss'
 })
 export class MeetingsComponent implements OnInit, OnDestroy {
+
+  @ViewChild('audioMenu') audioMenu!: Menu;
+  audioMenuItems: any[] = [];
+  currentAudioMeeting: Meeting | null = null;
   
 meetings: Meeting[] = [];
 selectedMeeting?: Meeting;
@@ -51,6 +65,16 @@ ngOnInit(): void {
       console.log('New meeting received:', m);
       this.meetings.unshift(m);
     });
+  }
+
+  get audioMeetings(): Meeting[] {
+    return this.meetings.filter(m => m.audioPath);
+  }
+  get transcriptMeetings(): Meeting[] {
+    return this.meetings.filter(m => m.transcriptState === 'Completed');
+  }
+  get summaryMeetings(): Meeting[] {
+    return this.meetings.filter(m => m.summaryState === 'Completed');
   }
 
   startRecording(): void {
@@ -103,39 +127,134 @@ ngOnInit(): void {
   }
 
   onDeleteMeeting(meeting: Meeting): void {
-  if (confirm(`Supprimer la réunion : ${meeting.title} ?`)) {
-    // Appeler un service REST ici si disponible
-    this.meetingService.deleteMeeting(meeting.id).pipe(
+    if (confirm(`Supprimer la réunion : ${meeting.title} ?`)) {
+      // Appeler un service REST ici si disponible
+      this.meetingService.deleteMeeting(meeting.id).pipe(
+        catchError((error) => {
+          console.error('Error deleting meeting:', error);
+          this.toastService.error("Erreur lors de la suppression de la réunion");
+          return of(null); // Return null in case of error
+        })
+      ).subscribe(() => {
+        console.log('Meeting deleted:', meeting.id);
+        this.toastService.success("Réunion supprimée");
+        this.meetings = this.meetings.filter(m => m.id !== meeting.id);
+      });
+    }
+  }
+
+  downloadAudio(meeting: Meeting):void {
+    if (!meeting.audioPath) {
+      this.toastService.error("Aucun fichier audio disponible");
+      return;
+    }
+    this.meetingService.downloadAudio(meeting.id).subscribe(blob => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${meeting.title}.wav`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    }, error => {
+      console.error('Error downloading audio:', error);
+      this.toastService.error("Erreur lors du téléchargement de l'audio");
+    });
+
+  }
+  downloadTranscript(meeting: Meeting):void {
+    console.log('Downloading transcript for meeting:', meeting);
+    if (!meeting.transcriptState || meeting.transcriptState !== 'Completed') {
+      this.toastService.error("Aucun fichier de transcription disponible");
+      return;
+    }
+    this.meetingService.downloadTranscript(meeting.id).subscribe(blob => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${meeting.title}.pdf`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    }, error => {
+      console.error('Error downloading transcript:', error);
+      this.toastService.error("Erreur lors du téléchargement de la transcription");
+    });
+  }
+
+  deleteAudio(meeting: Meeting):void {
+    if (!meeting.audioPath) {
+      this.toastService.error("Aucun fichier audio disponible");
+      return;
+    }
+    if (confirm(`Supprimer le fichier audio de la réunion : ${meeting.title} ?`)) {
+      this.meetingService.deleteAudio(meeting.id).subscribe(() => {
+        this.toastService.success("Fichier audio supprimé");
+        meeting.audioPath = undefined;
+      }, error => {
+        console.error('Error deleting audio:', error);
+        this.toastService.error("Erreur lors de la suppression de l'audio");
+      });
+    }
+  }
+
+  deleteTranscript(meeting: Meeting):void {
+    if (!meeting.transcriptPath) {
+      this.toastService.error("Aucun fichier de transcription disponible");
+      return;
+    }
+    if (confirm(`Supprimer le fichier de transcription de la réunion : ${meeting.title} ?`)) {
+      this.meetingService.deleteTranscript(meeting.id).subscribe(() => {
+        this.toastService.success("Fichier de transcription supprimé");
+        meeting.transcriptPath = undefined;
+      }, error => {
+        console.error('Error deleting transcript:', error);
+        this.toastService.error("Erreur lors de la suppression de la transcription");
+      });
+    }
+  }
+
+  downloadSummary(meeting: Meeting) { /* ... */ }
+  deleteSummary(meeting: Meeting) { /* ... */ }
+
+  openAudioMenu(event: MouseEvent, meeting: Meeting) {
+    this.currentAudioMeeting = meeting;
+    this.audioMenuItems = [
+      {
+        label: 'Transcription',
+        icon: 'pi pi-file',
+        command: () => this.transcribeAudio(meeting)
+      },
+      {
+        label: 'Sommarize',
+        icon: 'pi pi-align-left',
+        command: () => this.summarizeAudio(meeting)
+      }
+    ];
+    this.audioMenu.toggle(event);
+  }
+  
+  transcribeAudio(meeting: Meeting):void{
+    if (!meeting.audioPath) {
+      this.toastService.error("Aucun fichier audio disponible");
+      return;
+    }
+    this.meetingService.transcribeAudio(meeting.id).pipe(
       catchError((error) => {
-        console.error('Error deleting meeting:', error);
-        this.toastService.error("Erreur lors de la suppression de la réunion");
+        console.error('Error transcribing audio:', error);
+        this.toastService.error("Erreur lors de la transcription de l'audio");
         return of(null); // Return null in case of error
       })
     ).subscribe(() => {
-      console.log('Meeting deleted:', meeting.id);
-      this.toastService.success("Réunion supprimée");
-      this.meetings = this.meetings.filter(m => m.id !== meeting.id);
-    });
+      this.toastService.success("Transcription démarrée");
+      meeting.transcriptState = 'Queued'; 
+    });  
   }
-}
+
+  summarizeAudio(meeting: Meeting) { /* ... */ }
 
   ngOnDestroy(): void {
     this.meetingSub?.unsubscribe();
     this.signalRService.stop();
   }
 
-  audioFiles = [
-    { name: 'Meeting-001.wav', date: '27/04/2025' },
-    { name: 'Meeting-002.wav', date: '28/04/2025' },
-    { name: 'Meeting-003.wav', date: '29/04/2025' },
-  ];
-
-  transcripts = [
-    { name: 'Meeting-001_transcript.txt', date: '27/04/2025' },
-    { name: 'Meeting-002_transcript.txt', date: '28/04/2025' },
-  ];
-
-  summaries = [
-    { name: 'Meeting-001_summary.txt', date: '27/04/2025' },
-  ];
+ 
 }

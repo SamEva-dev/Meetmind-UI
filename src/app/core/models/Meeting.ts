@@ -6,11 +6,10 @@ export interface Meeting {
   state: MeetingState;
 
   transcriptState: TranscriptState;
-  transcriptPath?: string;
-
   summaryState: SummaryState;
+  transcriptPath?: string;
+  audioPath?: string;
   summaryPath?: string;
-
   duration?: string;
 }
 

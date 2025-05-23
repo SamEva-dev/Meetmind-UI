@@ -48,7 +48,7 @@
     <h2 class="text-2xl font-semibold">Réunions</h2>
     <p-button pRipple icon="pi pi-refresh" (onClick)="refresh()" class="p-button-rounded p-button-text" aria-label="Actualiser"></p-button>
   </div>
-
+<p-card class="shadow rounded-xl">
   <p-table [value]="meetings" class="shadow rounded-xl"
            [scrollable]="true" scrollHeight="400px"
            [virtualScroll]="true" [rows]="6"
@@ -97,4 +97,58 @@
       </tr>
     </ng-template>
   </p-table>
+  </p-card>
+
+<!-- Trois colonnes en bas : Audio, Transcriptions, Résumés -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+
+    <!-- Fichiers Audio -->
+    <p-card header="Fichiers Audio" class="shadow rounded-xl">
+      <ng-container *ngFor="let meeting of audioMeetings">
+        <div class="flex align-items-center justify-content-between p-2 border-bottom-1 border-gray-100">
+          <i class="pi pi-volume-up text-purple-400 mr-2"></i>
+          <span class="flex-1 ml-2 truncate">{{ meeting.title }}.wav</span>
+          <span class="text-xs text-gray-500 mr-2">{{ meeting.startUtc | date: 'dd/MM/yyyy' }}</span>
+          <button pButton pRipple icon="pi pi-download" class="p-button-rounded p-button-text"
+                  (click)="downloadAudio(meeting)"></button>
+          <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger p-button-text"
+                  (click)="deleteAudio(meeting)"></button>
+          <!-- Menu contextuel -->
+          <button pButton type="button" icon="pi pi-ellipsis-v" class="p-button-rounded p-button-text"
+                  (click)="openAudioMenu($event, meeting)"></button>
+        </div>
+      </ng-container>
+      <p-menu #audioMenu [popup]="true" [model]="audioMenuItems"></p-menu>
+    </p-card>
+
+    <!-- Transcriptions -->
+    <p-card header="Transcriptions" class="shadow rounded-xl">
+      <ng-container *ngFor="let meeting of transcriptMeetings">
+        <div class="flex align-items-center justify-content-between p-2 border-bottom-1 border-gray-100">
+          <i class="pi pi-file text-green-400 mr-2"></i>
+          <span class="flex-1 ml-2 truncate">{{ meeting.title }}_transcript.txt</span>
+          <span class="text-xs text-gray-500 mr-2">{{ meeting.startUtc | date: 'dd/MM/yyyy' }}</span>
+          <button pButton pRipple icon="pi pi-download" class="p-button-rounded p-button-text"
+                  (click)="downloadTranscript(meeting)"></button>
+          <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger p-button-text"
+                  (click)="deleteTranscript(meeting)"></button>
+        </div>
+      </ng-container>
+    </p-card>
+
+    <!-- Résumés -->
+    <p-card header="Résumés" class="shadow rounded-xl">
+      <ng-container *ngFor="let meeting of summaryMeetings">
+        <div class="flex align-items-center justify-content-between p-2 border-bottom-1 border-gray-100">
+          <i class="pi pi-align-left text-blue-400 mr-2"></i>
+          <span class="flex-1 ml-2 truncate">{{ meeting.title }}_summary.txt</span>
+          <span class="text-xs text-gray-500 mr-2">{{ meeting.startUtc | date: 'dd/MM/yyyy' }}</span>
+          <button pButton pRipple icon="pi pi-download" class="p-button-rounded p-button-text"
+                  (click)="downloadSummary(meeting)"></button>
+          <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger p-button-text"
+                  (click)="deleteSummary(meeting)"></button>
+        </div>
+      </ng-container>
+    </p-card>
+  </div>
 </div>

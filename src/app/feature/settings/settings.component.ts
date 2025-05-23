@@ -32,7 +32,11 @@ settings: Settings = {
     autoStopRecord: false,
     language: 'fr',
     transcriptionType: 'Grpc',
-    audioRecordingType: 'Native'
+    audioRecordingType: 'Native',
+    whisperModelType: 'Base',
+    whisperDeviceType: 'CPU',
+    whisperComputeType: 'Default',
+    diarizationModelType: 'SpeakerDiarization31'
   };
 
   constructor() {}

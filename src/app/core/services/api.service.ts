@@ -7,6 +7,7 @@ import { catchError, Observable, retry, throwError } from 'rxjs';
   providedIn: 'root'
 })
 export class ApiService {
+  
 private readonly versionUrl = '/v1';  // adapte si ton API est préfixée différemment
   private readonly baseUrl = `${environment.BASE_API}${this.versionUrl}`; // adapte si ton API est préfixée différemment
 
@@ -30,6 +31,12 @@ private readonly versionUrl = '/v1';  // adapte si ton API est préfixée diffé
 
   delete<T>(path: string, params?: Record<string, any>): Observable<T> {
     return this.http.delete<T>(`${this.baseUrl}${path}`, { params: this.buildParams(params) })
+      .pipe(catchError(this.handleError));
+  }
+
+  getBlob(path: string): Observable<Blob> {
+    console.log('GET Blob', `${this.baseUrl}${path}`);
+    return this.http.get(`${this.baseUrl}${path}`, { responseType: 'blob' })
       .pipe(catchError(this.handleError));
   }
 
