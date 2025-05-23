@@ -30,7 +30,9 @@ settings: Settings = {
     autoCancelMeeting: false,
     autoDeleteMeeting: false,
     autoStopRecord: false,
-    language: 'fr'
+    language: 'fr',
+    transcriptionType: 'Grpc',
+    audioRecordingType: 'Native'
   };
 
   constructor() {}
@@ -57,7 +59,10 @@ settings: Settings = {
           autoCancelMeeting: false,
           autoDeleteMeeting: false,
           autoStopRecord: false,
-          language: 'fr'
+          language: 'fr',
+          transcriptionType: 'Grpc',
+          audioRecordingType: 'Native'
+
         } as Settings); // Return default settings in case of error
       })
     ).subscribe((settings: Settings) => {

@@ -13,4 +13,9 @@ export interface Settings {
     useGoogleCalendar:boolean;
     useOutlookCalendar:boolean;
     language: string;
+    transcriptionType: TranscriptionType;
+    audioRecordingType: AudioRecordingType
   }
+
+  export type TranscriptionType = 'Grpc' | 'Process' | 'Interop';
+   export type AudioRecordingType = 'Native' | 'Process';

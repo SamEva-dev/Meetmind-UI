@@ -21,6 +21,13 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(),
     provideAnimationsAsync(),
     providePrimeNG({ theme: { preset: Aura, options: { darkModeSelector: '.app-dark' } } }),
-    provideToastr(),
+    provideToastr({
+      positionClass: 'toast-bottom-right',
+      timeOut: 4000,
+      closeButton: true,
+      progressBar: true,
+      progressAnimation: 'increasing',
+      preventDuplicates: true
+    }),
   ]
 };

@@ -9,6 +9,7 @@ import { MeetingsService } from './services/meetings.service';
 import { catchError, of, Subscription } from 'rxjs';
 import { SignalRService } from '../../core/services/signalr.service';
 import { ToastrService } from 'ngx-toastr';
+import { NotificationService } from '../../core/services/notification.service';
 @Component({
   selector: 'app-meetings',
   imports: [CommonModule,FormsModule, InputSwitchModule,ButtonModule,TableModule],
@@ -23,7 +24,7 @@ isRecording = false;
 
 meetingService = inject(MeetingsService);
 signalRService = inject(SignalRService);
-toastService = inject(ToastrService);
+toastService = inject(NotificationService);
 private meetingSub!: Subscription;
 
 constructor() {
@@ -53,6 +54,7 @@ ngOnInit(): void {
   }
 
   startRecording(): void {
+    console.log('Starting recording for meeting:', this.selectedMeeting);
     if (!this.selectedMeeting) return;
 
     this.meetingService.startRecording(this.selectedMeeting.id).subscribe({
