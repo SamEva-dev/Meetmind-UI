@@ -1,109 +1,205 @@
-<!-- settings.component.html -->
-<div class="p-8 max-w-3xl mx-auto space-y-6">
-  <!-- Section: Automatisation des réunions -->
-  <div class="border border-gray-200 rounded-xl bg-white dark:bg-surface-950">
-    <div class="flex items-center gap-2 px-6 pt-6">
-      <i class="pi pi-cog text-primary"></i>
-      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Paramètres</h2>
-    </div>
+<div class="p-8 max-w-3xl mx-auto">
 
-    <div class="px-6 pb-4 pt-2">
-      <h3 class="text-md font-medium text-purple-700 flex items-center gap-2">
-        <i class="pi pi-calendar"></i>
-        Automatisation des réunions
-      </h3>
+  <h2 class="text-2xl font-bold flex items-center gap-2 mb-6">
+    <i class="pi pi-cog text-purple-400"></i>
+    Paramètres
+  </h2>
 
-      <div class="mt-4 space-y-4">
-        <div class="flex justify-between items-center">
-          <div>
-            <div class="text-sm font-medium text-gray-900 dark:text-white">Réunion google calendar</div>
-            <div class="text-sm text-gray-500">Récupérer les réunions provenant de Google calendar</div>
-          </div>
-          <p-inputSwitch [(ngModel)]="settings.useGoogleCalendar"></p-inputSwitch>
-        </div>
-        <div class="flex justify-between items-center">
-          <div>
-            <div class="text-sm font-medium text-gray-900 dark:text-white">Réunion outlook</div>
-            <div class="text-sm text-gray-500">Récupérer les réunions provenant de Outlook calendar</div>
-          </div>
-          <p-inputSwitch [(ngModel)]="settings.useOutlookCalendar"></p-inputSwitch>
-        </div>
-        <div class="flex justify-between items-center">
-          <div>
-            <div class="text-sm font-medium text-gray-900 dark:text-white">Transcription automatique</div>
-            <div class="text-sm text-gray-500">Transcrit automatiquement les réunions après leur fin</div>
-          </div>
-          <p-inputSwitch [(ngModel)]="settings.autoTranscript"></p-inputSwitch>
-        </div>
+  <!-- Catégorie Automatisation -->
+  <p-card>
+    <ng-template pTemplate="header">
+      <div class="flex items-center gap-2 p-2">
+        <i class="pi pi-calendar-clock text-purple-400"></i>
+        <span class="font-bold text-lg">Automatisation des réunions</span>
+      </div>
+    </ng-template>
+    <div class="flex flex-col gap-4 py-2">
 
-        <div class="flex justify-between items-center">
-          <div>
-            <div class="text-sm font-medium text-gray-900 dark:text-white">Résumé automatique</div>
-            <div class="text-sm text-gray-500">Génère un résumé de la réunion après transcription</div>
-          </div>
-          <p-inputSwitch [(ngModel)]="settings.autoSummarize"></p-inputSwitch>
+      <div class="flex justify-between items-center">
+        <div>
+          <div class="font-medium">Transcription automatique</div>
+          <div class="text-sm text-gray-500">Transcrit automatiquement les réunions après leur fin</div>
         </div>
+        <p-inputSwitch [(ngModel)]="settings.autoTranscript"></p-inputSwitch>
+      </div>
 
-        <div class="flex justify-between items-center">
-          <div>
-            <div class="text-sm font-medium text-gray-900 dark:text-white">Démarrage automatique</div>
-            <div class="text-sm text-gray-500">Démarre l'enregistrement pour les événements Google Calendar</div>
-          </div>
-          <p-inputSwitch [(ngModel)]="settings.autoStartRecord"></p-inputSwitch>
+      <div class="flex justify-between items-center">
+        <div>
+          <div class="font-medium">Résumé automatique</div>
+          <div class="text-sm text-gray-500">Génère un résumé de la réunion après transcription</div>
         </div>
+        <p-inputSwitch [(ngModel)]="settings.autoSummarize"></p-inputSwitch>
+      </div>
 
-        <div class="flex justify-between items-center">
-          <div>
-            <div class="text-sm font-medium text-gray-900 dark:text-white">Arrêt automatique</div>
-            <div class="text-sm text-gray-500">Arrête l'enregistrement à l'heure de fin prévue</div>
-          </div>
-          <p-inputSwitch [(ngModel)]="settings.autoStopRecord"></p-inputSwitch>
+      <div class="flex justify-between items-center">
+        <div>
+          <div class="font-medium">Démarrage automatique</div>
+          <div class="text-sm text-gray-500">Démarre l'enregistrement pour les événements Google/Outlook Calendar</div>
         </div>
-        <div class="flex justify-between items-center">
-          <div>
-            <div class="text-sm font-medium text-gray-900 dark:text-white">Arrêt automatique</div>
-            <div class="text-sm text-gray-500">Annuler une réunion</div>
-          </div>
-          <p-inputSwitch [(ngModel)]="settings.autoCancelMeeting"></p-inputSwitch>
+        <p-inputSwitch [(ngModel)]="settings.autoStartRecord"></p-inputSwitch>
+      </div>
+
+      <div class="flex justify-between items-center">
+        <div>
+          <div class="font-medium">Arrêt automatique</div>
+          <div class="text-sm text-gray-500">Arrête l'enregistrement à l'heure de fin prévue</div>
         </div>
-        <div class="flex justify-between items-center">
-          <div>
-            <div class="text-sm font-medium text-gray-900 dark:text-white">Arrêt automatique</div>
-            <div class="text-sm text-gray-500">Supprimer une réunion</div>
-          </div>
-          <p-inputSwitch [(ngModel)]="settings.autoDeleteMeeting"></p-inputSwitch>
+        <p-inputSwitch [(ngModel)]="settings.autoStopRecord"></p-inputSwitch>
+      </div>
+
+      <div class="flex justify-between items-center">
+        <div>
+          <div class="font-medium">Suppression automatique</div>
+          <div class="text-sm text-gray-500">Supprime automatiquement les réunions après la période de rétention</div>
         </div>
+        <p-inputSwitch [(ngModel)]="settings.autoDeleteMeeting"></p-inputSwitch>
+      </div>
+
+      <div class="flex justify-between items-center">
+        <div>
+          <div class="font-medium">Annulation automatique</div>
+          <div class="text-sm text-gray-500">Annule les réunions si tous les participants quittent avant la fin</div>
+        </div>
+        <p-inputSwitch [(ngModel)]="settings.autoCancelMeeting"></p-inputSwitch>
+      </div>
+
+      <div class="flex justify-between items-center">
+        <div>
+          <div class="font-medium">Consentement requis</div>
+          <div class="text-sm text-gray-500">Demande le consentement des participants avant d'enregistrer</div>
+        </div>
+        <p-inputSwitch [(ngModel)]="settings.requireConsent"></p-inputSwitch>
       </div>
     </div>
-  </div>
+  </p-card>
 
-  <!-- Section: Notifications -->
-  <div class="border border-gray-200 rounded-xl bg-white dark:bg-surface-950">
-    <div class="px-6 pt-6">
-      <h3 class="text-md font-medium text-purple-700 flex items-center gap-2">
-        <i class="pi pi-bell"></i>
-        Notifications
-      </h3>
-    </div>
-
-    <div class="px-6 pb-6 pt-4 space-y-6">
+  <!-- Catégorie Notifications -->
+  <p-card class="mb-4">
+    <ng-template pTemplate="header">
+      <div class="flex items-center gap-2  p-2">
+        <i class="pi pi-bell text-purple-400"></i>
+        <span class="font-bold text-lg">Notifications</span>
+      </div>
+    </ng-template>
+    <div class="flex flex-col gap-4 py-2">
+      <div class="flex justify-between items-center">
+        <div>
+          <div class="font-medium">Langue</div>
+          <div class="text-sm text-gray-500">Choix de la langue pour la réunion</div>
+        </div>
+        <p-dropdown [options]="SUPPORTED_LANGUAGES" [(ngModel)]="settings.audioRecordingType"></p-dropdown>
+      </div>
       <div>
-        <label class="text-sm font-medium text-gray-900 dark:text-white block mb-1">Minutes avant la réunion</label>
-        <small class="text-gray-500 block mb-2">Notification {{settings.notifyBeforeMinutes}} minutes avant la réunion</small>
-        <input type="range" min="0" max="30" [(ngModel)]="settings.notifyBeforeMinutes" class="w-full accent-purple-500">
+        <div class="flex justify-between items-center mb-1">
+          <span class="font-medium">Minutes avant la réunion</span>
+          <span class="text-sm text-gray-500">{{ settings.notifyBeforeMinutes }} minutes</span>
+        </div>
+        <p-slider [(ngModel)]="settings.notifyBeforeMinutes" [min]="0" [max]="30"></p-slider>
+        <div class="text-sm text-gray-400">Notification {{ settings.notifyBeforeMinutes }} minutes avant la réunion</div>
       </div>
 
       <div>
-        <label class="text-sm font-medium text-gray-900 dark:text-white block mb-1">Répétition des notifications</label>
-        <small class="text-gray-500 block mb-2">Rappel toutes les {{settings.notificationRepeatInterval}} minutes</small>
-        <input type="range" min="1" max="10" [(ngModel)]="settings.notificationRepeatInterval" class="w-full accent-purple-500">
+        <div class="flex justify-between items-center mb-1">
+          <span class="font-medium">Répétition des notifications</span>
+          <span class="text-sm text-gray-500">toutes les {{ settings.notificationRepeatInterval }} minutes</span>
+        </div>
+        <p-slider [(ngModel)]="settings.notificationRepeatInterval" [min]="1" [max]="10"></p-slider>
+        <div class="text-sm text-gray-400">Rappel toutes les {{ settings.notificationRepeatInterval }} minutes</div>
       </div>
     </div>
-  </div>
+  </p-card>
 
-  <!-- Bouton Enregistrer -->
-  <div class="text-right">
-    <p-button  label="Enregistrer" 
-    (click)="saveSettings()"></p-button>
+  <!-- Catégorie Avancé -->
+  <p-card class="mb-4">
+    <ng-template pTemplate="header">
+      <div class="flex items-center gap-2  p-2">
+        <i class="pi pi-sliders-h text-purple-400"></i>
+        <span class="font-bold text-lg">Paramètres avancés</span>
+      </div>
+    </ng-template>
+    <div class="flex flex-col gap-4 py-2">
+      <div class="flex justify-between items-center">
+        <div>
+          <div class="font-medium">Durée de conservation</div>
+          <div class="text-sm text-gray-500">Nombre de jours avant suppression automatique</div>
+        </div>
+        <p-slider [(ngModel)]="settings.retentionDays" [min]="1" [max]="365" [step]="1"></p-slider>
+        <span class="ml-2 text-sm text-gray-500">{{ settings.retentionDays }} jours</span>
+      </div>
+    </div>
+  </p-card>
+
+  <!-- Catégorie Intelligence / Moteur IA -->
+  <p-card class="mb-4">
+    <ng-template pTemplate="header">
+      <div class="flex items-center gap-2  p-2">
+        <i class="pi pi-robot text-purple-400"></i>
+        <span class="font-bold text-lg">Moteur d'intelligence artificielle</span>
+      </div>
+    </ng-template>
+    <div class="flex flex-col gap-4 py-2">
+      <div class="flex justify-between items-center">
+        <div>
+          <div class="font-medium">Type de transcription</div>
+          <div class="text-sm text-gray-500">Choisissez la méthode de transcription à utiliser</div>
+        </div>
+        <p-dropdown [options]="transcriptionTypes" [(ngModel)]="settings.transcriptionType"></p-dropdown>
+      </div>
+
+      <div class="flex justify-between items-center">
+        <div>
+          <div class="font-medium">Type d'enregistrement audio</div>
+          <div class="text-sm text-gray-500">Choix du backend d'enregistrement (natif ou process Python)</div>
+        </div>
+        <p-dropdown [options]="audioRecordingTypes" [(ngModel)]="settings.audioRecordingType"></p-dropdown>
+      </div>
+
+      <div class="flex justify-between items-center">
+        <div>
+          <div class="font-medium">Modèle Whisper</div>
+          <div class="text-sm text-gray-500">Performance, précision et taille du modèle de transcription</div>
+        </div>
+        <p-dropdown [options]="whisperModelTypes" [(ngModel)]="settings.whisperModelType"></p-dropdown>
+      </div>
+
+      <div class="flex justify-between items-center">
+        <div>
+          <div class="font-medium">Type d'appareil Whisper</div>
+          <div class="text-sm text-gray-500">Matériel utilisé (CPU, GPU, Cuda, Auto)</div>
+        </div>
+        <p-dropdown [options]="whisperDeviceTypes" [(ngModel)]="settings.whisperDeviceType"></p-dropdown>
+      </div>
+
+      <div class="flex justify-between items-center">
+        <div>
+          <div class="font-medium">Précision du calcul Whisper</div>
+          <div class="text-sm text-gray-500">Niveau de précision/rapidité pour le modèle</div>
+        </div>
+        <p-dropdown [options]="whisperComputeTypes" [(ngModel)]="settings.whisperComputeType"></p-dropdown>
+      </div>
+
+      <div class="flex justify-between items-center">
+        <div>
+          <div class="font-medium">Modèle de diarisation</div>
+          <div class="text-sm text-gray-500">Choix du modèle pour la reconnaissance des intervenants</div>
+        </div>
+        <p-dropdown [options]="diarizationModelTypes" [(ngModel)]="settings.diarizationModelType"></p-dropdown>
+      </div>
+
+      <div class="flex justify-between items-center">
+        <div>
+          <div class="font-medium">Modèle de résumé</div>
+          <div class="text-sm text-gray-500">Choix de la précision pour résumer une transcription</div>
+        </div>
+        <p-dropdown [options]="summarizeDetailLevels" [(ngModel)]="settings.summarizeDetailLevel"></p-dropdown>
+      </div>
+    </div>
+    
+  </p-card>
+
+  <!-- Bouton enregistrer -->
+  <div class="flex justify-end mt-6">
+    <button pButton type="button" icon="pi pi-save" label="Enregistrer"
+            class="p-button-rounded p-button-primary" (click)="saveSettings()"></button>
   </div>
 </div>

@@ -13,6 +13,8 @@ import { NotificationService } from '../../core/services/notification.service';
 import { CardModule } from 'primeng/card';
 import { Menu } from 'primeng/menu';
 import { MenuModule } from 'primeng/menu';
+import { MeetingsSignalRService } from './services/meetings-signal-r.service';
+
 @Component({
   selector: 'app-meetings',
   imports: [CommonModule,
@@ -37,34 +39,144 @@ selectedMeeting?: Meeting;
 isRecording = false;
 
 meetingService = inject(MeetingsService);
-signalRService = inject(SignalRService);
 toastService = inject(NotificationService);
+meetingsSignalR = inject(MeetingsSignalRService);
 private meetingSub!: Subscription;
 
 constructor() {
-  this.signalRService.startConnection("/hubs/meeting");
 }
 
 ngOnInit(): void {
     this.refresh();
+
+    this.meetingsSignalR.onMeetingCreated().subscribe(meeting => {
+      this.meetings = [...this.meetings, meeting];
+      this.selectedMeeting = meeting;
+      this.toastService.success('Nouvelle réunion ajoutée !');
+    });
+
+    this.meetingsSignalR.onMeetingUpdated().subscribe(meeting => {
+      const idx = this.meetings.findIndex(m => m.id === meeting.id);
+      if (idx >= 0) this.meetings[idx] = meeting;
+      this.toastService.info('Réunion mise à jour !');
+    });
+
+    this.meetingsSignalR.onImminentMeeting().subscribe(meeting => {
+      this.toastService.success('Réunion imminent ! :'+meeting.message);
+    });
+
+    this.meetingsSignalR.onRecordingStarted().subscribe(meeting => {
+      const idx = this.meetings.findIndex(m => m.id === meeting.id);
+      if (idx >= 0) {
+        this.meetings[idx].state = 'Recording';
+        console.log('Recording started for meeting:', meeting);
+        this.selectedMeeting = this.meetings[idx];
+        this.toastService.success(`Enregistrement démarré pour la réunion : ${meeting.title}`);
+      }
+    });
+
+    this.meetingsSignalR.onRecordingStopped().subscribe(meeting => {
+      const idx = this.meetings.findIndex(m => m.id === meeting.id);
+      if (idx >= 0) {
+        this.meetings[idx] = meeting;
+        this.selectedMeeting = this.meetings[idx];
+        console.log('Recording stopped for meeting:', meeting);
+        this.toastService.success(`Enregistrement arrêté pour la réunion : ${meeting.title}`);
+      }
+    });
+    this.meetingsSignalR.onRecordingPaused().subscribe(meeting => {
+      const idx = this.meetings.findIndex(m => m.id === meeting.id);
+      if (idx >= 0) {
+        this.meetings[idx].state = 'Paused';
+        this.selectedMeeting = this.meetings[idx];
+        console.log('Recording paused for meeting:', meeting);
+        this.toastService.info(`Enregistrement en pause pour la réunion : ${meeting.title}`);
+      }
+    });
+    this.meetingsSignalR.onRecordingResumed().subscribe(meeting => {
+      const idx = this.meetings.findIndex(m => m.id === meeting.id);
+      if (idx >= 0) {
+        this.meetings[idx].state = 'Recording';
+        this.selectedMeeting = this.meetings[idx];
+        console.log('Recording resumed for meeting:', meeting);
+        this.toastService.success(`Enregistrement repris pour la réunion : ${meeting.title}`);
+      }
+    }); 
+
+    this.meetingsSignalR.onTranscriptCreated().subscribe(meeting => {
+      const idx = this.meetings.findIndex(m => m.id === meeting.id);
+      if (idx >= 0) {
+        this.meetings[idx].transcriptState = 'Queued';
+        this.selectedMeeting = this.meetings[idx];
+        console.log('Transcript created for meeting:', meeting);
+        this.toastService.success(`Transcription terminée pour la réunion : ${meeting.title}`);
+      }
+    });
+
+    this.meetingsSignalR.onTranscriptProcessing().subscribe(meeting => {
+      const idx = this.meetings.findIndex(m => m.id === meeting.id);
+      if (idx >= 0) {
+        this.meetings[idx].transcriptState = 'Processing';
+        this.selectedMeeting = this.meetings[idx];
+        console.log('Transcript Processing for meeting:', meeting);
+        this.toastService.info(`Transcription en cours pour la réunion : ${meeting.title}`);
+      }
+    });
+    
+    this.meetingsSignalR.onTranscriptCompleted().subscribe(meeting => {
+      const idx = this.meetings.findIndex(m => m.id === meeting.id);
+      if (idx >= 0) {
+        this.meetings[idx]= meeting;
+        this.selectedMeeting = this.meetings[idx];
+        console.log('Transcript completed for meeting:', meeting);
+        this.toastService.success(`Transcription terminée pour la réunion : ${meeting.title}`);
+      }
+    }
+    );
+
+    this.meetingsSignalR.onSummaryProcessing().subscribe(meeting => {
+      const idx = this.meetings.findIndex(m => m.id === meeting.id);
+      if (idx >= 0) {
+        this.meetings[idx].summaryState = 'Processing';
+        this.selectedMeeting = this.meetings[idx];
+        console.log('Summary Processing for meeting:', meeting);
+        this.toastService.info(`Résumé en cours pour la réunion : ${meeting.title}`);
+      }
+    });
+
+    this.meetingsSignalR.onSummaryCreated().subscribe(meeting => {
+      const idx = this.meetings.findIndex(m => m.id === meeting.id);
+      if (idx >= 0) {
+        this.meetings[idx].summaryState = 'Queued';
+        this.selectedMeeting = this.meetings[idx];
+        console.log('Summary created for meeting:', meeting);
+        this.toastService.success(`Résumé créé pour la réunion : ${meeting.title}`);
+      }
+    });
+    this.meetingsSignalR.onSummaryCompleted().subscribe(meeting => {
+      const idx = this.meetings.findIndex(m => m.id === meeting.id);
+      if (idx >= 0) {
+        this.meetings[idx]= meeting;
+        this.selectedMeeting = this.meetings[idx];
+        console.log('Summary completed for meeting:', meeting);
+        this.toastService.success(`Résumé terminé pour la réunion : ${meeting.title}`);
+      }
+    });
   }
 
   refresh() {
     this.meetingService.getRecentMeetings().pipe(
       catchError((error) => {
         console.error('Error loading meetings:', error);
+        this.toastService.error("Échec du chargement des réunions")
         return of([] as Meeting[]); // Return an empty array in case of error
       })
     ).subscribe((meetings: Meeting[]) => {
       console.log('Meetings loaded:', meetings);
-      this.toastService.error("Échec du chargement des réunions")
+      
       this.meetings = meetings;
     });
 
-    this.meetingSub = this.signalRService.on<Meeting>('NewMeeting').subscribe(m => {
-      console.log('New meeting received:', m);
-      this.meetings.unshift(m);
-    });
   }
 
   get audioMeetings(): Meeting[] {
@@ -139,6 +251,7 @@ ngOnInit(): void {
         console.log('Meeting deleted:', meeting.id);
         this.toastService.success("Réunion supprimée");
         this.meetings = this.meetings.filter(m => m.id !== meeting.id);
+        //this.meetings.push(meeting); // Update the list to reflect the deletion 
       });
     }
   }
@@ -253,7 +366,6 @@ ngOnInit(): void {
 
   ngOnDestroy(): void {
     this.meetingSub?.unsubscribe();
-    this.signalRService.stop();
   }
 
  
