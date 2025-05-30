@@ -1,8 +1,18 @@
+export interface PagedResult<T> {
+  items: T[];
+  totalCount: number;
+  page: number;
+  pageSize: number;
+}
+
+
 export interface Meeting {
   id: string;
   title: string;
   startUtc: string;
   endUtc?: string;
+  start: string;
+  end?: string;
   state: MeetingState;
 
   transcriptState: TranscriptState;
@@ -12,6 +22,8 @@ export interface Meeting {
   summaryPath?: string;
   duration?: string;
 }
+
+export type PagedMeetingsResult = PagedResult<Meeting>;
 
 export interface ImminentMeeting {
   meetingId: string;

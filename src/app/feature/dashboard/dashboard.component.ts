@@ -4,17 +4,18 @@ import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { PanelModule } from 'primeng/panel';
-import { GlobalStats, Notifications, StorageUasage } from '../../core/models/Meeting';
+import { GlobalStats, Meeting, Notifications, PagedMeetingsResult, StorageUasage } from '../../core/models/Meeting';
 import { SignalRService } from '../../core/services/signalr.service';
 import { DashboardService } from './services/dashboard.service';
 import { catchError, of } from 'rxjs';
 import { DashboardSignalRService } from './services/dashboard-signal-r.service';
+import { ScrollerModule } from 'primeng/scroller';
 
 
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, ButtonModule,CardModule,ProgressBarModule,PanelModule],
+  imports: [CommonModule, ButtonModule,CardModule,ProgressBarModule,PanelModule, ScrollerModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
@@ -41,25 +42,24 @@ export class DashboardComponent  implements OnInit {
     summariesCount: 0
   }
 
-  storageUsed:number = 0; // 65%
+  storageUsed:number = 0; 
   storageTotal:number = 0;
 
-  recentRecordings = [
-    { title: 'Réunion d\'équipe', date: '27/04/2025', duration: '45 min' },
-    { title: 'Présentation client', date: '28/04/2025', duration: '80 min' }
-  ];
+  recentRecordings: Meeting[] = [];
 
-  upcomingMeetings = [
-    { title: 'Standup hebdomadaire', date: '02/05/2025', time: '09:00' },
-    { title: 'Revue de projet', date: '03/05/2025', time: '14:30' }
-  ];
-
+  upcomingMeetings: Meeting[] = [];
+ isLoadingRecordings: boolean = false;
+ totalRecentRecordings: number = 0;
+  totalUpcomingMeetings: number = 0;
 
 
   ngOnInit(): void {
+    this.isLoadingRecordings = true;
     this.subscribeSignalRNotifications();
     this.getStocatgeUsagePercent();
     this.getGlobalStats();
+    this.loadRecentRecordings(3);
+    this.loadUpcomingMeeting(3);
   }
 
   subscribeSignalRNotifications() {
@@ -83,6 +83,10 @@ export class DashboardComponent  implements OnInit {
       ...this.notifications
     ];
   }
+  
+  private randomColor() {
+    return this.bgClasses[Math.floor(Math.random() * this.bgClasses.length)];
+  }
 
   getStocatgeUsagePercent() {
       this.dashboardService.getStorageUsage().pipe(
@@ -97,6 +101,7 @@ export class DashboardComponent  implements OnInit {
       }); 
   }
 
+
   getGlobalStats() {
     this.dashboardService.getGlobalStats().pipe(
       catchError((error) => {
@@ -108,8 +113,31 @@ export class DashboardComponent  implements OnInit {
     }); 
   }
 
-  randomColor() {
-    return this.bgClasses[Math.floor(Math.random() * this.bgClasses.length)];
+  loadRecentRecordings(num?:number){
+    this.dashboardService.getRecentMeeting(num).pipe(
+      catchError(err =>{
+        console.error(err)
+        return of([] as Meeting[])
+      })
+    ).subscribe(meetings  =>{
+      console.log(meetings);
+      this.recentRecordings = Array.isArray(meetings) ? meetings : meetings.items ?? [];
+      this.isLoadingRecordings = false
+      this.totalRecentRecordings = Array.isArray(meetings) ? meetings.length : meetings.totalCount ?? 0;
+  })
+  }
+
+  loadUpcomingMeeting(num?:number){
+    this.dashboardService.getUpComingMeeting(num).pipe(
+      catchError(err =>{
+        console.error(err);
+        return of([] as Meeting[])
+      })
+    ).subscribe(meetings =>{
+      this.upcomingMeetings = Array.isArray(meetings) ? meetings : meetings.items ?? [];;
+      this.isLoadingRecordings = false;
+      this.totalUpcomingMeetings = Array.isArray(meetings) ? meetings.length : meetings.totalCount ?? 0;
+    })
   }
 
   removeNotification(id: string) {
