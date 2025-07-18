@@ -134,6 +134,10 @@ ngOnInit(): void {
     }
     );
 
+    this.meetingsSignalR.onLiveTranscription().subscribe((text: string ) => {
+        console.log('Live transcription for meeting:', text);
+      });
+
     this.meetingsSignalR.onSummaryProcessing().subscribe(meeting => {
       const idx = this.meetings.findIndex(m => m.id === meeting.id);
       if (idx >= 0) {

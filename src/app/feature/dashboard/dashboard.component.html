@@ -26,79 +26,79 @@
 
   <!-- Statistiques globales -->
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-    <div class="p-4 bg-white rounded-lg shadow flex flex-col items-center">
+    <p-card class="shadow rounded-xl">
       <i class="pi pi-calendar text-3xl text-purple-400 mb-2"></i>
       <div class="text-xl font-bold">{{ stats.meetingsCount }}</div>
       <div class="text-sm text-gray-500">Réunions totales</div>
-    </div>
-    <div class="p-4 bg-white rounded-lg shadow flex flex-col items-center">
+    </p-card>
+    <p-card class="shadow rounded-xl">
       <i class="pi pi-clock text-3xl text-blue-400 mb-2"></i>
       <div class="text-xl font-bold">{{ stats.totalDuration }}</div>
       <div class="text-sm text-gray-500">Heures enregistrées</div>
-    </div>
-    <div class="p-4 bg-white rounded-lg shadow flex flex-col items-center">
+    </p-card>
+    <p-card class="shadow rounded-xl">
       <i class="pi pi-file text-3xl text-green-400 mb-2"></i>
       <div class="text-xl font-bold">{{ stats.transcriptionsCount }}</div>
       <div class="text-sm text-gray-500">Transcriptions</div>
-    </div>
-    <div class="p-4 bg-white rounded-lg shadow flex flex-col items-center">
+    </p-card>
+    <p-card class="shadow rounded-xl">
       <i class="pi pi-align-left text-3xl text-orange-400 mb-2"></i>
       <div class="text-xl font-bold">{{ stats.summariesCount }}</div>
       <div class="text-sm text-gray-500">Résumés créés</div>
-    </div>
+    </p-card >
   </div>
 
   <!-- Enregistrements récents & Réunions à venir -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-    <!-- Enregistrements récents -->
-    <div class="bg-white p-4 rounded-lg shadow">
-  <div class="flex justify-between items-center mb-3">
-    <div class="font-semibold text-lg">Enregistrements récents</div>
-    <button pButton icon="pi pi-refresh" class="p-button-rounded p-button-text" (click)="loadRecentRecordings(3)" [disabled]="isLoadingRecordings"></button>
-  </div>
-  <div *ngIf="isLoadingRecordings" class="text-gray-400 text-center py-4">Chargement...</div>
-  <div *ngIf="recentRecordings.length < 5">
-  <ng-container *ngIf="!isLoadingRecordings">
-    <div *ngFor="let rec of recentRecordings" class="flex items-center justify-between py-2 border-b last:border-b-0">
-      <div>
-        <div class="font-bold">{{ rec.title }}</div>
-        <div class="text-xs text-gray-500">
-          {{ rec.endUtc ? (rec.endUtc | date: 'short') : (rec.startUtc | date: 'short') }}
+      <!-- Enregistrements récents -->
+      <p-card class="shadow rounded-xl">
+      <div class="flex justify-between items-center mb-3">
+        <div class="font-semibold text-lg">Enregistrements récents</div>
+        <button pButton icon="pi pi-refresh" class="p-button-rounded p-button-text" (click)="loadRecentRecordings(3)" [disabled]="isLoadingRecordings"></button>
+      </div>
+      <div *ngIf="isLoadingRecordings" class="text-gray-400 text-center py-4">Chargement...</div>
+      <div *ngIf="recentRecordings.length < 5">
+      <ng-container *ngIf="!isLoadingRecordings">
+        <div *ngFor="let rec of recentRecordings" class="flex items-center justify-between py-2 border-b last:border-b-0">
+          <div>
+            <div class="font-bold">{{ rec.title }}</div>
+            <div class="text-xs text-gray-500">
+              {{ rec.endUtc ? (rec.endUtc | date: 'short') : (rec.startUtc | date: 'short') }}
+            </div>
+          </div>
+          <div class="flex gap-2">
+            <button pButton icon="pi pi-play" class="p-button-text p-button-info"></button>
+            <button pButton icon="pi pi-trash" class="p-button-text p-button-danger"></button>
+          </div>
         </div>
-      </div>
-      <div class="flex gap-2">
-        <button pButton icon="pi pi-play" class="p-button-text p-button-info"></button>
-        <button pButton icon="pi pi-trash" class="p-button-text p-button-danger"></button>
-      </div>
-    </div>
-    <div *ngIf="!isLoadingRecordings && totalRecentRecordings > 3" class="mt-3 text-center">
-      <button pButton label="Voir tous les enregistrements" class="p-button-text p-button-sm" (click)="loadRecentRecordings()"></button>
-    </div>
-  </ng-container>
-  </div>
-  <p-scroller *ngIf="recentRecordings.length >= 5"
-            [items]="recentRecordings"
-            [itemSize]="60"
-            [style]="{height: '300px'}">
-  <ng-template pTemplate="item" let-rec>
-    <div class="flex items-center justify-between py-2 border-b last:border-b-0">
-      <div>
-        <div class="font-bold">{{ rec.title }}</div>
-        <div class="text-xs text-gray-500">
-          {{ rec.endUtc ? (rec.endUtc | date: 'short') : (rec.startUtc | date: 'short') }}
+        <div *ngIf="!isLoadingRecordings && totalRecentRecordings > 3" class="mt-3 text-center">
+          <button pButton label="Voir tous les enregistrements" class="p-button-text p-button-sm" (click)="loadRecentRecordings()"></button>
         </div>
+      </ng-container>
       </div>
-      <div class="flex gap-2">
-        <button pButton icon="pi pi-play" class="p-button-text p-button-info"></button>
-        <button pButton icon="pi pi-trash" class="p-button-text p-button-danger"></button>
-      </div>
-    </div>
-  </ng-template>
-</p-scroller>
-</div>
+      <p-scroller *ngIf="recentRecordings.length >= 5"
+                [items]="recentRecordings"
+                [itemSize]="60"
+                [style]="{height: '300px'}">
+      <ng-template pTemplate="item" let-rec>
+        <div class="flex items-center justify-between py-2 border-b last:border-b-0">
+          <div>
+            <div class="font-bold">{{ rec.title }}</div>
+            <div class="text-xs text-gray-500">
+              {{ rec.endUtc ? (rec.endUtc | date: 'short') : (rec.startUtc | date: 'short') }}
+            </div>
+          </div>
+          <div class="flex gap-2">
+            <button pButton icon="pi pi-play" class="p-button-text p-button-info"></button>
+            <button pButton icon="pi pi-trash" class="p-button-text p-button-danger"></button>
+          </div>
+        </div>
+      </ng-template>
+    </p-scroller>
+  </p-card>
 
     <!-- Réunions à venir -->
-    <div class="bg-white p-4 rounded-lg shadow">
+    <p-card class="shadow rounded-xl">
       <div class="flex justify-between items-center mb-3">
         <div class="font-semibold text-lg">Réunions à venir</div>
         <button pButton icon="pi pi-refresh" class="p-button-rounded p-button-text" (click)="loadUpcomingMeeting(3)"></button>
@@ -137,12 +137,12 @@
       <div class="mt-3 text-center">
         <button pButton label="Connecter Google Calendar" class="p-button-text p-button-sm"></button>
       </div>
-    </div>
+    </p-card>
   </div>
 
   <!-- Statistiques de stockage et activité équipe -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <div class="bg-white p-4 rounded-lg shadow">
+    <p-card class="shadow rounded-xl">
       <div class="font-semibold text-lg mb-2">Stockage utilisé</div>
       <div class="flex items-center mb-2">
         <div class="flex-1 h-3 bg-gray-200 rounded-full overflow-hidden">
@@ -153,8 +153,8 @@
       </div>
       <div class="text-xs text-gray-500 mb-2">Espace utilisé</div>
       <button pButton label="Gérer le stockage" class="p-button-text p-button-sm"></button>
-    </div>
-    <div class="bg-white p-4 rounded-lg shadow">
+    </p-card>
+    <p-card class="shadow rounded-xl">
       <div class="font-semibold text-lg mb-2">Activité de l'équipe</div>
       <div class="flex gap-6 mb-2">
         <div>
@@ -169,6 +169,6 @@
         </div>
       </div>
       <button pButton label="Voir les statistiques détaillées" class="p-button-text p-button-sm"></button>
-    </div>
+    </p-card>
   </div>
 </div>

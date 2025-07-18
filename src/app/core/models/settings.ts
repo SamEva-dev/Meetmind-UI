@@ -12,6 +12,7 @@ export interface Settings {
     retentionDays: number;
     useGoogleCalendar:boolean;
     useOutlookCalendar:boolean;
+    liveTranscriptionEnabled: boolean;
     language: string;
     transcriptionType: TranscriptionType;
     audioRecordingType: AudioRecordingType;

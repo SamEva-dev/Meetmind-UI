@@ -74,12 +74,13 @@ summarizeDetailLevels = [
 ];
 
 SUPPORTED_LANGUAGES = [
-  { code: 'fr', label: 'Français' },
-  { code: 'en', label: 'English' },
-  { code: 'es', label: 'Español' },
-  { code: 'de', label: 'Deutsch' },
-  { code: 'it', label: 'Italiano' },
-  { code: 'pt', label: 'Português' },
+  { code: 'Auto', label: 'Automatique' },
+  { code: 'Fr', label: 'Français' },
+  { code: 'En', label: 'English' },
+  { code: 'Es', label: 'Español' },
+  { code: 'De', label: 'Deutsch' },
+  { code: 'It', label: 'Italiano' },
+  { code: 'Pt', label: 'Português' },
   // ... Ajoute d'autres si besoin ...
 ];
 
@@ -98,7 +99,8 @@ settings: Settings = {
     autoCancelMeeting: false,
     autoDeleteMeeting: false,
     autoStopRecord: false,
-    language: 'fr',
+    liveTranscriptionEnabled: false,
+    language: 'Fr',
     transcriptionType: 'Grpc',
     audioRecordingType: 'Native',
     whisperModelType: 'Base',
@@ -132,7 +134,7 @@ settings: Settings = {
           autoCancelMeeting: false,
           autoDeleteMeeting: false,
           autoStopRecord: false,
-          language: 'fr',
+          language: 'Fr',
           transcriptionType: 'Grpc',
           audioRecordingType: 'Native'
 

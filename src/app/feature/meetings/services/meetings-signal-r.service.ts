@@ -71,6 +71,11 @@ export class MeetingsSignalRService {
     return this.signalR.on<Meeting>(this.hubTranscriptName, 'TranscriptCompleted');
   }
 
+  onLiveTranscription() : Observable<string> {
+    return this.signalR.on<string>(this.hubTranscriptName, 'LiveTranscription');
+  }
+  
+
   onNotificationMeeting(): Observable<Notifications> {
     return this.signalR.on<Notifications>(this.hubName, 'NotificationMeeting');
   }
